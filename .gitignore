@@ -12,3 +12,6 @@ staticfiles/
 
 # VS Code
 .vscode/
+
+*:Zone.Identifier
+node_modules/
