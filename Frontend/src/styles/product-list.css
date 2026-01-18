@@ -1,0 +1,84 @@
+/* =========================
+   PRODUCT LIST PAGE
+   ========================= */
+
+.content-wrapper {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 1.5rem 4rem;
+  font-family: Inter, system-ui, sans-serif;
+  color: #1f2937;
+}
+
+/* =========================
+   TITRE
+   ========================= */
+
+.section-title {
+  text-align: center;
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 2.5rem;
+}
+
+/* =========================
+   GRID
+   ========================= */
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 2rem;
+}
+
+/* =========================
+   SYSTEM MESSAGES
+   ========================= */
+
+.system-message {
+  max-width: 700px;
+  margin: 0 auto 2rem;
+  padding: 0.9rem 1.4rem;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.message-success {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.message-error {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* =========================
+   STATES
+   ========================= */
+
+.loading-message,
+.error-message,
+.no-data-message {
+  text-align: center;
+  font-size: 1.1rem;
+  margin-top: 4rem;
+  color: #6b7280;
+}
+
+.error-message {
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+
+@media (max-width: 640px) {
+  .section-title {
+    font-size: 1.9rem;
+  }
+}

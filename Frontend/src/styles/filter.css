@@ -1,0 +1,117 @@
+/* =========================
+   FILTER PAGE
+   ========================= */
+
+.filter-page-container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 30px;
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  font-family: Inter, system-ui, sans-serif;
+}
+
+/* =========================
+   TITRES
+   ========================= */
+
+.filter-title {
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 0.75rem;
+  color: #111827;
+}
+
+.filter-intro {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #6b7280;
+}
+
+/* =========================
+   OPTIONS
+   ========================= */
+
+.filter-options {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.filter-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.filter-group input,
+.filter-group select {
+  width: 100%;
+  padding: 0.7rem 0.85rem;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-size: 0.95rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.filter-group input:focus,
+.filter-group select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* =========================
+   RANGE
+   ========================= */
+
+.price-range {
+  width: 100%;
+  margin-top: 0.75rem;
+}
+
+.price-hint {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-top: 0.4rem;
+}
+
+/* =========================
+   BOUTON
+   ========================= */
+
+.filter-submit {
+  align-self: center;
+  margin-top: 1.5rem;
+  padding: 0.75rem 1.8rem;
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.25s, transform 0.15s;
+}
+
+.filter-submit:hover {
+  background: #1e40af;
+  transform: translateY(-1px);
+}
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+
+@media (max-width: 640px) {
+  .filter-page-container {
+    padding: 22px;
+  }
+
+  .filter-title {
+    font-size: 1.6rem;
+  }
+}

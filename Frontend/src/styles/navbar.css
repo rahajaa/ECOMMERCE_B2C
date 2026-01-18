@@ -1,0 +1,130 @@
+/* =========================
+   NAVBAR
+   ========================= */
+
+.navbar {
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.nav-container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 0.8rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* =========================
+   LOGO
+   ========================= */
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  text-decoration: none;
+  color: #0f172a;
+}
+
+.logo h1 {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+/* =========================
+   LINKS
+   ========================= */
+
+.nav-links {
+  display: flex;
+  gap: 1.4rem;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #334155;
+  font-size: 0.95rem;
+  position: relative;
+}
+
+.nav-links a:hover {
+  color: #2563eb;
+}
+
+/* ACTIVE LINK */
+.nav-links a.active {
+  color: #2563eb;
+  font-weight: 600;
+}
+
+.nav-links a.active::after {
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #2563eb;
+}
+
+/* =========================
+   ACTIONS
+   ========================= */
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.auth-buttons {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.btn-login {
+  text-decoration: none;
+  color: #2563eb;
+  font-weight: 500;
+}
+
+.btn-register {
+  background: #2563eb;
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 0.85rem;
+}
+
+.cart-icon {
+  text-decoration: none;
+  font-size: 1rem;
+  position: relative;
+}
+
+.cart-count {
+  background: #ef4444;
+  color: white;
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  border-radius: 999px;
+  position: absolute;
+  top: -8px;
+  right: -10px;
+}
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+
+@media (max-width: 900px) {
+  .nav-links {
+    display: none;
+  }
+}

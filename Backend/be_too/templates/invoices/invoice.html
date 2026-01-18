@@ -1,0 +1,39 @@
+<!-- PATH: backend/betoo/templates/invoices/invoice.html -->
+
+<h2>{{ invoice.company_name }}</h2>
+<p>{{ invoice.company_address }}</p>
+<p>NIF: {{ invoice.company_nif }} | STAT: {{ invoice.company_stat }}</p>
+<hr>
+
+<h3>Facture: {{ invoice.invoice_number }}</h3>
+<p>Commande #: {{ invoice.order.id }}</p>
+<p>Date: {{ invoice.issued_at }}</p>
+<p>Client: {{ invoice.order.user.username if invoice.order.user else "Invité" }}</p>
+<hr>
+
+<table border="1" cellpadding="5" cellspacing="0">
+  <thead>
+    <tr>
+      <th>Produit</th>
+      <th>Qté</th>
+      <th>Prix Unitaire (Ar)</th>
+      <th>Total HT (Ar)</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in invoice.order.items.all %}
+    <tr>
+      <td>{{ item.product_variant.product.name }}</td>
+      <td>{{ item.quantity }}</td>
+      <td>{{ item.price_at_purchase }}</td>
+      <td>{{ item.quantity|floatformat:2|add:"0"|floatformat:2|floatformat:""|add:item.price_at_purchase|floatformat:"" }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<p>Total HT: {{ invoice.total_ht }} Ar</p>
+<p>TVA ({{ invoice.tva_percent }}%): {{ invoice.total_tva }} Ar</p>
+<h3>Total TTC: {{ invoice.total_ttc }} Ar</h3>
+<hr>
+<p>Merci pour votre confiance – BeToo Madagascar</p>
