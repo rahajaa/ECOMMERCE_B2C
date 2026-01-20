@@ -2,11 +2,14 @@
 
 from rest_framework import generics, status
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated, AllowAny # <--- Importez AllowAny
+from rest_framework.permissions import AllowAny # <--- Importez AllowAny
 from django.contrib.auth import get_user_model
 from .serializers import UserSerializer, RegisterSerializer
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+
 
 
 class UserRegistrationView(generics.CreateAPIView):
@@ -58,3 +61,18 @@ class LoginView(ObtainAuthToken):
                 'email': user.email
             }
         })
+# accounts/views.py
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def profile(request):
+    """
+    Retourne le profil de l'utilisateur connecté (JWT requis)
+    """
+    user = request.user
+    return Response({
+        "id": user.id,
+        "email": user.email,
+        "username": user.username,
+    })

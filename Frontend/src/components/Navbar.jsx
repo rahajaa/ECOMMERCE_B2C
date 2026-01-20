@@ -28,6 +28,8 @@ function Navbar() {
           <div className="auth-buttons">
             <Link to="/login" className="btn-login">Connexion</Link>
             <Link to="/register" className="btn-register">Inscription</Link>
+            <Link to="/account">Mon compte</Link>
+
           </div>
 
           <Link to="/cart" className="cart-icon">

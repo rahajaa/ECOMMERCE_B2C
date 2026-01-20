@@ -1,0 +1,36 @@
+services:
+
+  db:
+    image: postgres:16
+    container_name: ecommerce-db
+    environment:
+      POSTGRES_DB: ecommerce
+      POSTGRES_USER: ecommerce_user
+      POSTGRES_PASSWORD: ecommerce_pass
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"   # ⬅️ PostgreSQL visible sur 5433
+
+  backend:
+    build: ./Backend
+    container_name: ecommerce-backend
+    ports:
+      - "9000:8000"   # ⬅️ Django accessible sur 9000
+    volumes:
+      - ./Backend:/app
+    command: python manage.py runserver 0.0.0.0:8000
+    depends_on:
+      - db
+
+  frontend:
+    build: ./Frontend
+    container_name: ecommerce-frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./Frontend:/app
+    command: npm run dev
+
+volumes:
+  postgres_data:
