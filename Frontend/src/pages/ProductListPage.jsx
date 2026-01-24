@@ -1,116 +1,66 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 function ProductListPage() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [categories, setCategories] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Simulation de l'API Django
-    const fetchData = async () => {
-      try {
-        // En attendant l'API, on simule des données
-        setTimeout(() => {
-          setProducts([
-            { id: 1, name: 'Ordinateur Portable Gaming', price: '250000 Ar', description: 'PC Gamer RTX 4060, 16GB RAM', category: 'Électronique' },
-            { id: 2, name: 'iPhone 15 Pro', price: '1800000 Ar', description: '128GB, Titanium', category: 'Téléphonie' },
-            { id: 3, name: 'Sony WH-1000XM5', price: '850000 Ar', description: 'Casque antibruit', category: 'Audio' },
-            { id: 4, name: 'MacBook Air M2', price: '3200000 Ar', description: '13", 8GB, 256GB', category: 'Électronique' },
-            { id: 5, name: 'Samsung S24 Ultra', price: '2200000 Ar', description: '512GB, S-Pen', category: 'Téléphonie' },
-            { id: 6, name: 'Apple Watch Series 9', price: '1200000 Ar', description: 'GPS, 45mm', category: 'Wearables' },
-          ]);
-          
-          setCategories(['Tous', 'Électronique', 'Téléphonie', 'Audio', 'Wearables']);
-          setLoading(false);
-        }, 1500);
-      } catch (error) {
-        console.error('Erreur:', error);
+    axios.get('http://10.96.131.99:9000/api/products/')
+      .then(res => {
+        const data = Array.isArray(res.data) ? res.data : (res.data.results || []);
+        setProducts(data);
         setLoading(false);
-      }
-    };
-
-    fetchData();
+      })
+      .catch(err => {
+        setError("Impossible de charger les produits.");
+        setLoading(false);
+      });
   }, []);
 
-  if (loading) {
-    return (
-      <div className="container">
-        <h1 className="page-title">Nos Produits</h1>
-        <div className="loading">Chargement des produits...</div>
-      </div>
-    );
-  }
+  if (loading) return <div style={{ padding: '50px', textAlign: 'center' }}>Chargement...</div>;
 
   return (
-    <div className="container">
-      <h1 className="page-title">Nos Produits</h1>
-      
-      {/* Filtres */}
-      <div className="filters" style={{ marginBottom: '2rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-        {categories.map(category => (
-          <button 
-            key={category} 
-            style={{ 
-              padding: '0.5rem 1rem', 
-              border: '1px solid #ddd', 
-              borderRadius: '8px', 
-              background: category === 'Tous' ? '#2563eb' : 'white',
-              color: category === 'Tous' ? 'white' : '#333',
-              cursor: 'pointer'
-            }}
-          >
-            {category}
-          </button>
-        ))}
-      </div>
-      
-      {/* Grille de produits */}
-      {products.length === 0 ? (
-        <div className="empty-state">
-          <p>Aucun produit disponible pour le moment.</p>
-        </div>
-      ) : (
-        <div className="product-grid">
-          {products.map(product => (
-            <div key={product.id} className="product-card">
-              <div style={{ 
-                width: '100%', 
-                height: '200px', 
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'white',
-                fontSize: '2rem'
-              }}>
-                {product.name.charAt(0)}
-              </div>
-              <div className="product-info">
-                <h3 className="product-title">{product.name}</h3>
-                <p className="product-price">{product.price}</p>
-                <p className="product-description">{product.description}</p>
-                <div style={{ 
-                  display: 'flex', 
-                  justifyContent: 'space-between', 
-                  alignItems: 'center',
-                  marginTop: '1rem'
-                }}>
-                  <span style={{ 
-                    fontSize: '0.8rem', 
-                    color: '#6b7280', 
-                    background: '#f3f4f6',
-                    padding: '0.25rem 0.5rem',
-                    borderRadius: '4px'
-                  }}>
-                    {product.category}
-                  </span>
-                  <button className="btn-add-to-cart">Ajouter</button>
+    <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
+      <h1 style={{ marginBottom: '20px' }}>Nos Produits</h1>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '20px' }}>
+        {products.map(product => {
+          const imageSrc = product.main_image 
+            ? (product.main_image.startsWith('http') ? product.main_image : `http://10.96.131.99:9000${product.main_image}`)
+            : 'https://placehold.co/300x200?text=Pas+d+image';
+
+          return (
+            <div key={product.id} className="product-card" style={{ border: '1px solid #ddd', borderRadius: '8px', overflow: 'hidden', transition: 'box-shadow 0.3s' }}>
+              {/* Lien sur l'image et le titre */}
+              <Link to={`/products/${product.slug}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                <div style={{ width: '100%', height: '200px', background: '#f0f0f0', overflow: 'hidden' }}>
+                  <img 
+                    src={imageSrc} 
+                    alt={product.name}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s' }}
+                    onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
+                    onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                  />
                 </div>
+                <div style={{ padding: '15px' }}>
+                  <h3 style={{ margin: '10px 0', fontSize: '1.1rem' }}>{product.name}</h3>
+                  <p style={{ color: '#666', fontSize: '0.9rem' }}>{product.category?.name}</p>
+                  <p style={{ fontWeight: 'bold', color: '#007bff', fontSize: '1.2rem' }}>
+                    {Number(product.price).toLocaleString()} Ar
+                  </p>
+                </div>
+              </Link>
+              <div style={{ padding: '0 15px 15px' }}>
+                <button style={{ width: '100%', padding: '10px', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
+                  Ajouter au panier
+                </button>
               </div>
             </div>
-          ))}
-        </div>
-      )}
+          );
+        })}
+      </div>
     </div>
   );
 }

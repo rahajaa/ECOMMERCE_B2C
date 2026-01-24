@@ -23,42 +23,40 @@ class CartDetailView(generics.RetrieveAPIView):
             cart, created = Cart.objects.get_or_create(session_key=session_key)
         return cart
 
+# ... (tes imports restent identiques)
+
 class AddToCartView(APIView):
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (permissions.AllowAny,) # Changé pour permettre l'ajout sans login
 
     def post(self, request, *args, **kwargs):
         variant_id = request.data.get('variant_id')
-        quantity = request.data.get('quantity', 1)
+        quantity = int(request.data.get('quantity', 1))
 
         try:
             product_variant = ProductVariant.objects.get(id=variant_id)
         except ProductVariant.DoesNotExist:
-            return Response({"detail": "Variante de produit non trouvée."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"detail": "Variante non trouvée."}, status=status.HTTP_404_NOT_FOUND)
 
-        if product_variant.stock < quantity:
-            return Response({"detail": "Stock insuffisant pour cette variante."}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Récupérer le panier de l'utilisateur ou de la session
+        # 1. Récupération du panier (Logique session/user)
         if request.user.is_authenticated:
             cart, created = Cart.objects.get_or_create(user=request.user)
         else:
-            session_key = request.session.session_key
-            if not session_key:
+            if not request.session.session_key:
                 request.session.create()
-                session_key = request.session.session_key
-            cart, created = Cart.objects.get_or_create(session_key=session_key)
+            cart, created = Cart.objects.get_or_create(session_key=request.session.session_key)
 
-        # Ajouter ou mettre à jour l'article dans le panier
+        # 2. Ajout ou mise à jour (Correction du nom de champ : variant)
         cart_item, item_created = CartItem.objects.get_or_create(
             cart=cart,
-            product_variant=product_variant,
+            variant=product_variant, # <-- Corrigé (était product_variant)
             defaults={'quantity': quantity}
         )
+        
         if not item_created:
             cart_item.quantity += quantity
             cart_item.save()
 
-        serializer = serializers.CartSerializer(cart, context={'request': request}) # Utilisez serializers.CartSerializer
+        serializer = serializers.CartSerializer(cart, context={'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class UpdateCartItemView(generics.UpdateAPIView):

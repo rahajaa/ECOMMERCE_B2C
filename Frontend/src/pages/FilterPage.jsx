@@ -1,55 +1,88 @@
-// src/pages/FilterPage.jsx
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import '../styles/filter.css';
 
-function FilterPage() {
+const API_BASE_URL = 'http://10.96.131.99:9000/api';
+
+function FilterPage({ onFilterChange }) {
+  const [categories, setCategories] = useState([]);
+  const [filters, setFilters] = useState({
+    category: '',
+    priceMax: 1000000,
+    search: ''
+  });
+
+  // 1. Charger les vraies catégories du Backend
+  useEffect(() => {
+    axios.get(`${API_BASE_URL}/categories/`)
+      .then(res => setCategories(res.data))
+      .catch(err => console.error("Erreur catégories:", err));
+  }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFilters(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // On construit l'URL de filtrage pour Django
+    // Exemple: ?category__slug=electronique&search=iphone
+    let query = `?search=${filters.search}`;
+    if (filters.category) query += `&category__slug=${filters.category}`;
+    
+    // On envoie ces filtres au composant parent (ProductListPage)
+    onFilterChange(query);
+  };
+
   return (
     <div className="filter-page-container">
       <h2 className="filter-title">Recherche et Filtres Avancés</h2>
-      <p className="filter-intro">
-        Utilisez les options ci-dessous pour affiner votre recherche de produits ou services.
-      </p>
 
-      <div className="filter-options">
+      <form className="filter-options" onSubmit={handleSubmit}>
+        {/* FILTRE CATÉGORIE (DYNAMIQUE) */}
         <div className="filter-group">
           <label htmlFor="category">Catégorie</label>
-          <select id="category" name="category">
+          <select id="category" name="category" value={filters.category} onChange={handleChange}>
             <option value="">Toutes les catégories</option>
-            <option value="electronique">Électronique</option>
-            <option value="mode">Mode</option>
-            <option value="services-web">Services Web</option>
-            <option value="maison">Maison</option>
+            {categories.map(cat => (
+              <option key={cat.id} value={cat.slug}>{cat.name}</option>
+            ))}
           </select>
         </div>
 
+        {/* FILTRE PRIX */}
         <div className="filter-group">
-          <label htmlFor="priceRange">Fourchette de Prix</label>
+          <label htmlFor="priceMax">Prix Max : {Number(filters.priceMax).toLocaleString()} Ar</label>
           <input
             type="range"
-            id="priceRange"
-            name="priceRange"
+            id="priceMax"
+            name="priceMax"
             min="0"
-            max="1000000"
-            step="10000"
-            className="price-range"
+            max="5000000"
+            step="50000"
+            value={filters.priceMax}
+            onChange={handleChange}
           />
-          <div className="price-hint">Prix max : 1 000 000 Ar</div>
         </div>
 
+        {/* RECHERCHE TEXTUELLE */}
         <div className="filter-group">
-          <label htmlFor="keywords">Mots-clés</label>
+          <label htmlFor="search">Mots-clés</label>
           <input
             type="text"
-            id="keywords"
-            name="keywords"
-            placeholder="Rechercher par mot-clé..."
+            id="search"
+            name="search"
+            placeholder="Ex: iPhone, Samsung..."
+            value={filters.search}
+            onChange={handleChange}
           />
         </div>
 
-        <button className="filter-submit">
-          Appliquer les filtres
+        <button type="submit" className="filter-submit">
+          🔍 Appliquer les filtres
         </button>
-      </div>
+      </form>
     </div>
   );
 }

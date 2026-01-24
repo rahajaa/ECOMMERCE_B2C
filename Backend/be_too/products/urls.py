@@ -1,7 +1,18 @@
 # X:\ecommerce_Projects\BeToo_Project\be_too_ecommerce\products\urls.py
-from django.urls import path
-from . import views  # <-- IMPORTANT: Utilisez ".views" car c'est dans le même dossier
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import CategoryViewSet, BrandViewSet, ProductViewSet, ProductVariantViewSet, ProductImageViewSet
 
+router = DefaultRouter()
+router.register(r'categories', CategoryViewSet)
+router.register(r'brands', BrandViewSet)
+router.register(r'variants', ProductVariantViewSet)
+router.register(r'images', ProductImageViewSet)
+router.register(r'', ProductViewSet) # À mettre en dernier car le slug peut capturer les autres
+
+urlpatterns = [
+    path('', include(router.urls)),
+]
 urlpatterns = [
     # URLs pour les Catégories
     path('categories/', views.CategoryListCreateView.as_view(), name='category-list-create'),

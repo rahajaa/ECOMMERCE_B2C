@@ -1,36 +1,46 @@
-services:
+version: '3.8'
 
+services:
   db:
     image: postgres:16
+    restart: always
     container_name: ecommerce-db
     environment:
-      POSTGRES_DB: ecommerce
-      POSTGRES_USER: ecommerce_user
-      POSTGRES_PASSWORD: ecommerce_pass
+      - POSTGRES_DB=ecommerce
+      - POSTGRES_USER=ecommerce_user
+      - POSTGRES_PASSWORD=ecommerce_pass
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5433:5432"   # ⬅️ PostgreSQL visible sur 5433
+      - "5433:5432"
 
   backend:
-    build: ./Backend
+    build: ./Backend/be_too
     container_name: ecommerce-backend
     ports:
-      - "9000:8000"   # ⬅️ Django accessible sur 9000
+      - "9000:8000"
     volumes:
-      - ./Backend:/app
+      - ./Backend/be_too:/app
+      - ./media:/app/media
+    env_file:
+      - ./Backend/be_too/.env
     command: python manage.py runserver 0.0.0.0:8000
     depends_on:
       - db
 
   frontend:
     build: ./Frontend
+    restart: always
     container_name: ecommerce-frontend
     ports:
-      - "5173:5173"
+      - "3000:5173"
     volumes:
       - ./Frontend:/app
-    command: npm run dev
+      - /app/node_modules  
+    environment:
+      - VITE_API_URL=http://10.96.131.99:9000/api
+    depends_on:
+      - backend
 
 volumes:
   postgres_data:

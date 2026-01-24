@@ -1,22 +1,19 @@
-# X:\Projects\BeToo_Project\be_too_ecommerce\cart\serializers.py
-
 from rest_framework import serializers
 from .models import Cart, CartItem
-from products.serializer import ProductVariantSerializer
+from products.serializers import ProductVariantSerializer
 
 class CartItemSerializer(serializers.ModelSerializer):
-    product_variant = ProductVariantSerializer(read_only=True) # Affiche les détails de la variante
+    variant = ProductVariantSerializer(read_only=True)
+    total_item_price = serializers.ReadOnlyField(source='get_total')
 
     class Meta:
         model = CartItem
-        fields = ['id', 'product_variant', 'quantity', 'added_at']
-        read_only_fields = ['added_at']
+        fields = ['id', 'variant', 'quantity', 'total_item_price']
 
 class CartSerializer(serializers.ModelSerializer):
-    items = CartItemSerializer(many=True, read_only=True) # Affiche les articles du panier
-    # Vous pouvez ajouter un champ calculé pour le total du panier ici
+    items = CartItemSerializer(many=True, read_only=True)
+    total_cart_price = serializers.ReadOnlyField(source='total')
 
     class Meta:
         model = Cart
-        fields = ['id', 'user', 'session_key', 'created_at', 'updated_at', 'items']
-        read_only_fields = ['user', 'session_key', 'created_at', 'updated_at']
+        fields = ['id', 'user', 'items', 'total_cart_price', 'updated_at']
